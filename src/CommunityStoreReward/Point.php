@@ -4,7 +4,7 @@ namespace Concrete\Package\CommunityStoreReward\Src\CommunityStoreReward;
 use Doctrine\ORM\Mapping as ORM;
 use Concrete\Core\Support\Facade\DatabaseORM as dbORM;
 use Concrete\Core\Entity\User\User;
-use Concrete\Package\CommunityStore\Src\CommunityStore\Order\Order;
+use Database;
 
 /**
  * @ORM\Entity
@@ -29,22 +29,16 @@ class Point {
 
 
 	/**
-	 * @ORM\Column(type="string",length=100,nullable=false)
+	 * @ORM\Column(type="string",length=100,nullable=true)
 	 */
 	public $email;
 
 
 	/**
-	 * @ORM\ManyToOne(targetEntity="\Concrete\Package\CommunityStore\Src\CommunityStore\Order\Order", inversedBy="oID")
-	 * @ORM\JoinColumn(name="oID", referencedColumnName="oID")
+	 * @ORM\OneToOne(targetEntity="\Concrete\Package\CommunityStoreReward\Src\CommunityStoreReward\Code", inversedBy="rcID")
+	 * @ORM\JoinColumn(name="rcID", referencedColumnName="rcID")
 	 */
-	protected $oID;
-
-
-	/**
-	 * @ORM\Column(type="string",length=100,nullable=true)
-	 */
-	public $discountCode;
+	public $rcID;
 
 
 	/**
@@ -68,6 +62,9 @@ class Point {
 		return $em->find(get_class(), $pID);
 	}
 
+	public function __construct(){
+		$this->date = new \DateTime();
+	}
 
 	public function save () {
 		$em = dbORM::entityManager();
@@ -86,28 +83,14 @@ class Point {
 	}
 
 	/**
-	 * @param User $user
+	 * @param \Concrete\Core\Entity\User\User $user
 	 */
 	public function setUser(User $user){
 		$this->uID = $user;
 	}
 
 	/**
-	 * @return Order|null
-	 */
-	public function getOID () {
-		return $this->oID;
-	}
-
-	/**
-	 * @param Order $order
-	 */
-	public function setOID(Order $order){
-		$this->oID = $order;
-	}
-
-	/**
-	 * @return User|null
+	 * @return \Concrete\Core\Entity\User\User|null
 	 */
 	public function getUser(){
 		return $this->uID;
@@ -121,14 +104,23 @@ class Point {
 		$this->email = $email;
 	}
 
-	public function getDiscountCode() {
-		return $this->discountCode;
+	/**
+	 * @return Code|null
+	 */
+	public function getRewardCodeObject() {
+		return $this->rcID;
 	}
 
+	/**
+	 * @param $code Code
+	 */
 	public function setDiscountCode($code){
-		$this->discountCode = $code;
+		$this->rcID = $code;
 	}
 
+	/**
+	 * @param $date \DateTime
+	 */
 	public function setDate($date){
 		$this->date = $date;
 	}
@@ -145,7 +137,32 @@ class Point {
 		return $this->points;
 	}
 
+	/**
+	 * @param $points integer
+	 */
 	public function setPoints ($points) {
 		$this->points = $points;
+	}
+
+	/**
+	 * @param $uID int
+	 * @return int
+	 */
+	public static function getTotalByUserID ($uID) {
+		$db = Database::Connection();
+/* @var $db \Concrete\Core\Database\Connection\Connection*/
+
+		return (int) $db->fetchColumn('SELECT SUM(points) FROM CommunityStoreRewardPoints WHERE uID=? GROUP BY points', [$uID]);
+	}
+
+	/**
+	 * @param $email string
+	 * @return int
+	 */
+	public static function getTotalByEmail ($email) {
+		$db = Database::Connection();
+		/* @var $db \Concrete\Core\Database\Connection\Connection*/
+
+		return (int) $db->fetchColumn('SELECT SUM(points) FROM CommunityStoreRewardPoints WHERE email=? GROUP BY points', [$email]);
 	}
 }

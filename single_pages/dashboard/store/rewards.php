@@ -2,6 +2,7 @@
 $form = Core::make('helper/form');
 /* @var $form \Concrete\Core\Form\Service\Form */
 use \Concrete\Core\Support\Facade\Url;
+
 ?>
 
 <div class="ccm-dashboard-header-buttons">
@@ -28,21 +29,38 @@ use \Concrete\Core\Support\Facade\Url;
 		<div class="col-md-4">
 			<div class="form-group">
 				<?= $form->label('spent', t('Amount spent')); ?>
-				<?= $form->number('spent', Config::get('community_store_rewards.spent_amount'), ['min' => 1, 'step' => 1]) ?>
+				<?= $form->number('spent', Config::get('community_store_rewards.spent_amount'), ['min' => 0, 'step' => 1]) ?>
 			</div>
 		</div>
 		<div class="col-md-4">
 			<div class="form-group">
 				<?= $form->label('points', t('Points to award')); ?>
-				<?= $form->number('points', Config::get('community_store_rewards.points_awarded'), ['min' => 1, 'step' => 1]) ?>
+				<?= $form->number('points', Config::get('community_store_rewards.points_awarded'), ['min' => 0, 'step' => 1]) ?>
 			</div>
 		</div>
 		<div class="col-md-4">
 			<div class="form-group">
 				<?= $form->label('issue', t('Issue code when points total is')); ?>
-				<?= $form->number('issue', Config::get('community_store_rewards.issue_points_total'), ['min' => 1, 'step' => 1]) ?>
+				<?= $form->number('issue', Config::get('community_store_rewards.issue_points_total'), ['min' => 0, 'step' => 1]) ?>
 			</div>
 		</div>
+	</div>
+
+
+	<div class="row">
+		<div class="col-md-4">
+			<div class="form-group">
+				<?= $form->label('register', t('Award points for registering')); ?>
+				<?= $form->select('register', [0=>t('No'),1=>t('Yes')], Config::get('community_store_rewards.register')) ?>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="form-group">
+				<?= $form->label('register_points', t('Points for registering')); ?>
+				<?= $form->number('register_points', Config::get('community_store_rewards.register_points'), ['min' => 0, 'step' => 1]) ?>
+			</div>
+		</div>
+
 	</div>
 
 

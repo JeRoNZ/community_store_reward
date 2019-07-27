@@ -4,9 +4,15 @@ namespace Concrete\Package\CommunityStoreReward\Controller\SinglePage\Dashboard\
 
 use Concrete\Core\Support\Facade\Config;
 use Concrete\Core\Page\Controller\DashboardPageController;
+use Concrete\Core\User\UserInfo;
 use Concrete\Package\CommunityStore\Src\CommunityStore\Discount\DiscountRuleList;
 use Concrete\Package\CommunityStore\Src\CommunityStore\Discount\DiscountRule;
 use Concrete\Core\Routing\Redirect;
+use Concrete\Package\CommunityStoreReward\Src\CommunityStoreReward\Code;
+use Concrete\Package\CommunityStoreReward\Src\CommunityStoreReward\CodeList;
+use Concrete\Core\Search\Pagination\PaginationFactory;
+use Concrete\Package\CommunityStoreReward\Src\CommunityStoreReward\Point;
+use Concrete\Core\User\User;
 
 class Rewards extends DashboardPageController {
 	public function view () {
@@ -46,9 +52,11 @@ class Rewards extends DashboardPageController {
 
 			if (!$errors->has()) {
 				Config::save('community_store_rewards.discount_rule_id', $args['rule']);
-				Config::save('community_store_rewards.spent_amount', $args['spent']);
-				Config::save('community_store_rewards.points_awarded', $args['points']);
-				Config::save('community_store_rewards.issue_points_total', $args['issue']);
+				Config::save('community_store_rewards.spent_amount', (float) $args['spent']);
+				Config::save('community_store_rewards.points_awarded', (int) $args['points']);
+				Config::save('community_store_rewards.issue_points_total', (int) $args['issue']);
+				Config::save('community_store_rewards.register', $args['register'] ? 1 : 0);
+				Config::save('community_store_rewards.register_points', (int) $args['register_points']);
 				Config::save('community_store_rewards.emailalerts', $args['emailAlert']);
 				Config::save('community_store_rewards.emailalertsname', $args['emailAlertName']);
 				Config::save('community_store_rewards.rewardHeader', $args['receiptHeader']);
