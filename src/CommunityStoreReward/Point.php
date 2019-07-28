@@ -4,6 +4,7 @@ namespace Concrete\Package\CommunityStoreReward\Src\CommunityStoreReward;
 use Doctrine\ORM\Mapping as ORM;
 use Concrete\Core\Support\Facade\DatabaseORM as dbORM;
 use Concrete\Core\Entity\User\User;
+use Concrete\Package\CommunityStore\Src\CommunityStore\Order\Order;
 use Database;
 
 /**
@@ -22,8 +23,8 @@ class Point {
 
 
 	/**
-	 * @ORM\ManyToOne(targetEntity="\Concrete\Core\Entity\User\User", inversedBy="uID")
-	 * @ORM\JoinColumn(name="uID", referencedColumnName="uID")
+	 * @ORM\ManyToOne(targetEntity="\Concrete\Core\Entity\User\User")
+	 * @ORM\JoinColumn(name="uID", referencedColumnName="uID",nullable=true)
 	 */
 	protected $uID;
 
@@ -35,10 +36,17 @@ class Point {
 
 
 	/**
-	 * @ORM\OneToOne(targetEntity="\Concrete\Package\CommunityStoreReward\Src\CommunityStoreReward\Code", inversedBy="rcID")
-	 * @ORM\JoinColumn(name="rcID", referencedColumnName="rcID")
+	 * @ORM\OneToOne(targetEntity="\Concrete\Package\CommunityStoreReward\Src\CommunityStoreReward\Code")
+	 * @ORM\JoinColumn(name="rcID", referencedColumnName="rcID",nullable=true)
 	 */
 	public $rcID;
+
+
+	/**
+	 * @ORM\OneToOne(targetEntity="\Concrete\Package\CommunityStore\Src\CommunityStore\Order\Order")
+	 * @ORM\JoinColumn(name="oID", referencedColumnName="oID",nullable=true)
+	 */
+	public $oID;
 
 
 	/**
@@ -116,6 +124,20 @@ class Point {
 	 */
 	public function setDiscountCode($code){
 		$this->rcID = $code;
+	}
+
+	/**
+	 * @return Order|null
+	 */
+	public function getOrderObject() {
+		return $this->oID;
+	}
+
+	/**
+	 * @param $order Order
+	 */
+	public function setOrderID($order){
+		$this->oID = $order;
 	}
 
 	/**

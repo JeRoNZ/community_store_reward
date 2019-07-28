@@ -17,9 +17,9 @@ class PointList extends ItemList
     public function createQuery()
     {
 		$this->query
-			->select('p.id')
-			->from('CommunityStoreRewardPoints', 'p')
-			->leftJoin('p', 'CommunityStoreDiscountCodes', 'd', 'p.dcID = d.dcID');
+			->select('r.id')
+			->from('CommunityStoreRewardPoints', 'r')
+			->leftJoin('r', 'CommunityStoreRewardCodes', 'c', 'r.rcID = c.rcID');
     }
 
 
@@ -36,7 +36,7 @@ class PointList extends ItemList
 
     public function getResult($queryRow)
     {
-        return Code::getByID($queryRow['id']);
+        return Point::getByID($queryRow['id']);
     }
 
     protected function createPaginationObject()

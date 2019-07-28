@@ -22,8 +22,8 @@ class Code {
 
 
 	/**
-	 * @ORM\ManyToOne(targetEntity="\Concrete\Core\Entity\User\User", inversedBy="uID")
-	 * @ORM\JoinColumn(name="uID", referencedColumnName="uID")
+	 * @ORM\ManyToOne(targetEntity="\Concrete\Core\Entity\User\User")
+	 * @ORM\JoinColumn(name="uID", referencedColumnName="uID",nullable=true))
 	 */
 	protected $uID;
 
@@ -35,7 +35,7 @@ class Code {
 
 
 	/**
-	 * @ORM\OneToOne(targetEntity="\Concrete\Package\CommunityStore\Src\CommunityStore\Discount\DiscountCode", inversedBy="dcID")
+	 * @ORM\OneToOne(targetEntity="\Concrete\Package\CommunityStore\Src\CommunityStore\Discount\DiscountCode")
 	 * @ORM\JoinColumn(name="dcID", referencedColumnName="dcID")
 	 */
 	public $dcID;
