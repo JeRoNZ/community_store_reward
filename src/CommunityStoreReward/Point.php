@@ -174,7 +174,7 @@ class Point {
 		$db = Database::Connection();
 /* @var $db \Concrete\Core\Database\Connection\Connection*/
 
-		return (int) $db->fetchColumn('SELECT SUM(points) FROM CommunityStoreRewardPoints WHERE uID=? GROUP BY points', [$uID]);
+		return (int) $db->fetchColumn('SELECT SUM(points) FROM CommunityStoreRewardPoints WHERE uID=? GROUP BY uID', [$uID]);
 	}
 
 	/**
@@ -185,6 +185,6 @@ class Point {
 		$db = Database::Connection();
 		/* @var $db \Concrete\Core\Database\Connection\Connection*/
 
-		return (int) $db->fetchColumn('SELECT SUM(points) FROM CommunityStoreRewardPoints WHERE email=? GROUP BY points', [$email]);
+		return (int) $db->fetchColumn('SELECT SUM(points) FROM CommunityStoreRewardPoints WHERE email=? GROUP BY email', [$email]);
 	}
 }

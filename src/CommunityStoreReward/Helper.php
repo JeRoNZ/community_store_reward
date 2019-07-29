@@ -33,12 +33,16 @@ class Helper {
 	 * @param $points integer
 	 */
 	private function assignCode ($arg) {
+		$log = new Logger('rewards');
+
 		// First we get the points and see if we have enough to assign
 
 		if ($arg instanceof UserInfo) {
 			$totalPoints = RewardPoint::getTotalByUserID($arg->getUserID());
+			$log->addInfo(__METHOD__.' userinfo object, total points='.$totalPoints);
 		} else {
 			$totalPoints = RewardPoint::getTotalByEmail($arg);
+			$log->addInfo(__METHOD__.' email, total points='.$totalPoints);
 		}
 
 		if ($totalPoints <= 0)
@@ -52,10 +56,11 @@ class Helper {
 			return false;
 		}
 
+		// TODO make this loop so that multiple codes are issued if there are enough points
+
 		// Woot!, we have enough points - award the code
 		$rule = DiscountRule::getByID(Config::get('community_store_rewards.discount_rule_id'));
 		if (!$rule) {
-			$log = new Logger('rewards');
 			$log->addCritical('Discount rule has been removed');
 			return false;
 		}

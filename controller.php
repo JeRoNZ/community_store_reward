@@ -11,6 +11,7 @@ use Concrete\Core\Package\PackageService;
 use Concrete\Package\CommunityStoreReward\Src\CommunityStoreReward\Helper;
 use Config;
 use Route;
+use Core;
 
 defined('C5_EXECUTE') or die("Access Denied.");
 
@@ -59,8 +60,6 @@ class Controller extends Package {
 	}
 
 	public function on_start () {
-		//Route::register('/csrdebug','\Concrete\Package\CommunityStoreReward\Src\CommunityStoreReward\Helper::Debug');
-
 		Events::addListener('on_user_validate', function ($event) {
 			/* @var $event \Concrete\Core\User\Event\UserInfo */
 			$ui = $event->getUserInfoObject();
@@ -76,7 +75,29 @@ class Controller extends Package {
 		Events::addListener('on_community_store_payment_complete', function ($event) {
 			/* @var $event \Concrete\Package\CommunityStore\Src\CommunityStore\Order\OrderEvent */
 			$order = $event->getOrder();
+			/* @var $order \Concrete\Package\CommunityStore\Src\CommunityStore\Order\Order */
+			// How much was spent
+			$total = $order->getTotal();
+			$spend = Config::get('community_store_rewards.spent_amount');
 
+			if ($spend) {
+				$points = floor($total / $spend);
+				$points = $points * Config::get('community_store_rewards.points_awarded');
+
+				if ($points > 0) {
+					$customer = $order->getCustomerID();
+					$arg = false;
+					if ($customer) {
+						$arg = Core::make('Concrete\Core\User\UserInfoRepository')->getByID($customer);
+					}
+					if (!$arg) {
+						$arg = $order->getAttribute('email');
+					}
+
+					$point = new Helper();
+					$point->addPoints($arg, $points);
+				}
+			}
 		});
 	}
 }
